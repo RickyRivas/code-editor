@@ -18,7 +18,6 @@
 
   function handleCodeUpdate(event) {
     const updatedCode = event.detail.code
-    console.log("updatedCode", updatedCode)
 
     sectionStore.update((currentSection) => ({
       ...currentSection,

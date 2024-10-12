@@ -98,8 +98,6 @@ export async function getCodeFromSupabase(id) {
             .eq('id', id)
             .single()
 
-        console.log(data, error)
-
         if (error) throw error
 
         if (!data) {

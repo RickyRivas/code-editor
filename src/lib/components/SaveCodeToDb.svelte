@@ -13,9 +13,9 @@
       type: "section",
     },
     langs: {
-      html: "<!-- html code -->",
-      css: "/* Css/less */",
-      javascript: "// Javascript or Jquery",
+      html: "",
+      css: "",
+      javascript: "",
     },
   }
 
@@ -32,7 +32,6 @@
   async function saveToDb() {
     try {
       const savedCode = await saveOrUpdateCodeInSupabase(code)
-      console.log("savedCode:", savedCode)
     } catch (error) {
       console.log("error saving code")
     }
@@ -43,6 +42,7 @@
     if (snippetId) {
       try {
         code = await getCodeFromSupabase(id)
+        codeReactivity = code
       } catch (error) {
         console.error("Error loading snippet:", error)
       }
@@ -50,6 +50,7 @@
   }
 
   // check if there is an id in the search params
+  let codeReactivity = {}
   const snippetId = $page.url.searchParams.get("snippetId")
   if (snippetId) {
     fetchSnippet(snippetId)
@@ -85,8 +86,13 @@
 </form>
 
 <h2>Preview</h2>
-<SectionEditor
-  section={code.langs}
-  on:sectionUpdate={(e) => {
-    saveFromEditor(e)
-  }} />
+<!-- This {#key} block tells Svelte to completely destroy 
+    and recreate the SectionEditor component whenever [codeReactivity] changes. This ensures that the SectionEditor will update on load -->
+
+{#key codeReactivity}
+  <SectionEditor
+    section={code.langs}
+    on:sectionUpdate={(e) => {
+      saveFromEditor(e)
+    }} />
+{/key}
