@@ -1,0 +1,228 @@
+footer {
+    display: block;
+    position: relative;
+    z-index: 400;
+    padding: 0;
+    background-color: var(--primary);
+
+    @media only screen and (min-width: 768px) {}
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: (75/20em);
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        padding: 3em 0;
+
+        @media only screen and (min-width: 1024px) {
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-direction: row;
+            padding: 5em 0;
+        }
+    }
+
+    a {
+        color: #fff;
+        transition: color .33s ease;
+
+        &:hover,
+        &.active {
+            color: #000;
+        }
+    }
+
+    .logo {
+        @logowidth: 200;
+        @logoheight: 73;
+        .ib;
+        .va(top);
+        width: (@logowidth/20em);
+        height: (@logoheight/20em);
+
+        svg,
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    h2.title {
+        @fs: 20; //font-size
+        @lh: 18; //line-height
+        @marginbtm: 22;
+
+        display: block;
+        line-height: (@lh/@fs);
+        .fs(~'clamp( 12px,'(@fs/20em) ~','(@fs*1px) ~')');
+        .bold;
+        color: #fff;
+        margin-bottom: (@marginbtm/@fs*1em);
+    }
+
+    .mod {
+        display: inline-flex;
+        gap: (20/20em);
+        .va(top);
+
+        @media only screen and (max-width: 767px) {
+            width: 100%;
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: 3em;
+            text-align: center;
+
+            .item {
+                max-width: (500/20em);
+            }
+
+            .ft-sitemap {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 0 20px;
+            }
+        }
+
+        @media only screen and (min-width: 768px) {
+            gap: (100/20em);
+        }
+
+        ul {
+            margin: 0;
+            list-style: none;
+
+            li {
+                margin-bottom: (0);
+                .fs(inherit);
+
+                p {
+                    margin: 0;
+                    color: #fff;
+                }
+
+                a {
+                    @fs: 16; //font-size
+                    @lh: 20; //line-height
+                    display: block;
+                    line-height: (@lh/@fs);
+                    .fs(~'clamp( 12px,'(@fs/20em) ~','(@fs*1px) ~')');
+
+                    @media only screen and (max-width: 1023px) {
+                        .lh(44px);
+                        .fs(16px);
+                    }
+                }
+
+                &.active {
+                    a {
+                        color: #000;
+                    }
+                }
+            }
+        }
+    }
+
+    // credit 
+    .credit {
+        padding: .5em 0;
+        display: block;
+        background-color: #212121;
+        text-align: center;
+        color: #fff;
+
+        @media only screen and (max-width: 767px) {
+            span {
+                display: block;
+
+                &.divider {
+                    display: none;
+                }
+            }
+        }
+
+        span {
+            margin: 0 auto;
+            font-size: min(14px, 5vw);
+            line-height: 1.5;
+            width: 90%;
+
+            a {
+                &:hover {
+                    color: var(--primary);
+                }
+            }
+        }
+    }
+}
+
+// social media
+/* ===============================================
+	socialmedia
+=============================================== */
+footer .socialmedia {
+    @icondim: 40; //social-icon height (and often width) from psd proof
+    @iconfs: 20; //social-icon font-size from psd proof
+
+    line-height: 0;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    .if;
+    .va(top);
+    justify-content: center;
+    position: relative;
+    z-index: 300;
+    gap: 5px;
+    // desk 1300w
+
+    a {
+        background-color: var(--secondary);
+        min-width: 24px; // mandatory minimum desktop target size
+        min-height: 24px; // mandatory minimum desktop target size
+        .if;
+        .jc(center);
+        .ai(center);
+        vertical-align: top;
+        position: relative;
+        transition: transform 0.33s ease-in-out, color 0.33s ease-in-out;
+        .lh(0);
+
+        @media only screen and (max-width: 1023px) {
+            width: 44px; // mandatory minimum mob tap-target size
+            height: 44px; // mandatory minimum mob tap-target size
+        }
+
+        // midTab 1024oo 
+        @media only screen and (min-width: 1024px) {
+            height: ((@icondim/@iconfs)*1em);
+            min-width: 18px;
+            width: ((@icondim/@iconfs)*1em); //for slimmer icons: uncomment and adjust the multiplier
+        }
+
+        svg {
+            width: 50%;
+        }
+
+        // maxTab 1024w
+
+        &:nth-last-of-type(1) {
+            margin: 0;
+        }
+
+        &:hover {
+            color: var(--secondary);
+            z-index: 400;
+            transform: translate(0, 0) scale(1.44);
+        }
+
+        .icon {
+            position: relative;
+        }
+    }
+}

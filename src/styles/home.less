@@ -1,0 +1,85 @@
+@slideshowstyle: 'video';
+@slideshowheight: 800;
+
+#slideshow {
+    // font-size: 1.7vw;
+    text-align: center;
+    color: #fff;
+    min-height: 51vw;
+    background: #000; //UI ghost element
+    position: relative;
+    z-index: 400;
+    margin-top: 64px;
+
+    &::before {
+        content: '';
+        .overlay;
+        background-color: fade(#000, 10%);
+        z-index: 100;
+    }
+
+    @media only screen and (min-width: 1024px) {
+        font-size: inherit;
+        width: 100%;
+        margin-top: 0;
+        top: 0;
+        /* maxTab 1024w */
+    }
+
+    @media only screen and (min-width: 1300px) and (max-width: 1999px) {
+        min-height: @slideshowheight*1px; //video reflects 'full bloom' dimensions
+        /* range 1300w - 1999oo */
+    }
+
+    .welcomevid {
+        width: 100%;
+        vertical-align: top;
+        aspect-ratio: ~'16 / 9'; //reduces cls
+
+        //uncomment below for parallax video - dont't forget to uncomment local.js parallax code
+        @media only screen and (min-width: 1300px) {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        @media only screen and (min-width: 1300px) and (max-width: 1999px) {
+            width: 2000px;
+            margin: 0 ~'calc(-1000px + 50vw)'; //video reflects 'full bloom' dimensions 
+            /* range 1300w - 1999oo */
+        }
+
+        &[poster] {
+            object-fit: cover;
+        }
+    }
+
+    .ssoverlay {
+        position: absolute;
+        z-index: 777;
+        left: 0;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: block;
+
+        @media only screen and (min-width: 1024px) {
+            top: 55%;
+        }
+
+        @media only screen and (min-width: 1300px) {
+            transform: none;
+            top: 60%;
+        }
+
+        .slogan {
+            @fs: 40; //font-size
+            @lh: 44; //line-height
+
+            display: block;
+            line-height: (@lh/@fs);
+            .fs(~'clamp( 12px,'(@fs/20em) ~','(@fs*1px) ~')');
+        }
+    }
+}
