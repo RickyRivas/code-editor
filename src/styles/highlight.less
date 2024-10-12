@@ -1,0 +1,157 @@
+@highlightcolor1: #e2777a;
+@highlightcolor2: #6196cc;
+@highlightcolor3: #f08d49;
+@highlightcolor4: #f8c555;
+@highlightcolor5: #cc99cd;
+@highlightcolor6: #7ec699;
+@highlightcolor7: #67cdcc;
+
+// HTML 
+@tagcolor: #98E391;
+@attrnamecolor: #89BEFA;
+@attrvaluecolor: #AFD5FB;
+
+// CSS
+@selectorcolor: #98E391;
+@rulecolor: #CE736D;
+@keywordcolor: #fff;
+@propertycolor: #89BEFA;
+
+
+code[class*=language-],
+pre[class*=language-] {
+    color: #ccc;
+    background: 0 0;
+    font-family: inherit;
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none
+}
+
+pre[class*=language-] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto
+}
+
+:not(pre)>code[class*=language-],
+pre[class*=language-] {
+    background: #2d2d2d
+}
+
+:not(pre)>code[class*=language-] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal
+}
+
+.token {
+
+    &.block-comment,
+    &.cdata,
+    &.comment,
+    &.doctype,
+    &.prolog {
+        color: #999;
+    }
+
+    &.punctuation {
+        color: #ccc
+    }
+
+    &.deleted,
+    &.namespace {
+        color: @highlightcolor1;
+    }
+
+    &.attr-name {
+        color: @attrnamecolor;
+    }
+
+    &.tag {
+        color: @tagcolor;
+    }
+
+    &.function-name {
+        color: @highlightcolor2;
+    }
+
+    &.boolean,
+    &.function,
+    &.number {
+        color: @highlightcolor3;
+    }
+
+    &.class-name,
+    &.constant,
+    &.symbol {
+        color: @highlightcolor4;
+    }
+
+    &.property {
+        color: @propertycolor;
+    }
+
+    &.builtin,
+    &.important {
+        color: @highlightcolor5;
+    }
+
+    &.atrule {
+        color: @rulecolor;
+    }
+
+    &.keyword {
+        color: @keywordcolor;
+    }
+
+    &.selector {
+        color: @selectorcolor;
+    }
+
+
+    &.char,
+    &.regex,
+    &.string,
+    &.variable {
+        color: @highlightcolor6;
+    }
+
+    &.attr-value {
+        color: @attrvaluecolor;
+    }
+
+    &.entity,
+    &.operator,
+    &.url {
+        color: @highlightcolor7;
+    }
+
+    &.bold,
+    &.important {
+        font-weight: 700
+    }
+
+    &.italic {
+        font-style: italic
+    }
+
+    &.entity {
+        cursor: help
+    }
+
+    &.inserted {
+        color: green
+    }
+}
