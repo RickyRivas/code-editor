@@ -1,7 +1,10 @@
 <script>
   import { enhance } from "$app/forms"
-  import { saveCodeToSupabase } from "$lib/supabaseCodeSaver"
+  import { saveOrUpdateCodeInSupabase, getCodeFromSupabase } from "$lib/supabaseCodeSaver"
   import SectionEditor from "./SectionEditor.svelte"
+  import { page } from "$app/stores"
+
+  let updatingSnippet = false
 
   let code = {
     metadata: {
@@ -22,21 +25,44 @@
   }
 
   function saveFromEditor(e) {
-    // SectionEditor only takes/returns in langs
+    // only update code.langs
     code.langs = e.detail.section
   }
 
   async function saveToDb() {
     try {
-      const savedCode = await saveCodeToSupabase(code)
+      const savedCode = await saveOrUpdateCodeInSupabase(code)
       console.log("savedCode:", savedCode)
     } catch (error) {
       console.log("error saving code")
     }
   }
+
+  async function fetchSnippet(id) {
+    console.log(id)
+    if (snippetId) {
+      try {
+        code = await getCodeFromSupabase(id)
+      } catch (error) {
+        console.error("Error loading snippet:", error)
+      }
+    }
+  }
+
+  // check if there is an id in the search params
+  const snippetId = $page.url.searchParams.get("snippetId")
+  if (snippetId) {
+    fetchSnippet(snippetId)
+    updatingSnippet = true
+  }
 </script>
 
-<h2>Add a new section or snippet to DB</h2>
+{#if updatingSnippet}
+  <h2>{`updating snippet #${snippetId}`}</h2>
+{:else}
+  <h2>Add a new snippet!</h2>
+{/if}
+
 <form
   action="/"
   method="post"
