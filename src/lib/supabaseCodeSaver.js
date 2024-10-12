@@ -50,6 +50,7 @@ function flattenAndStripCodeObject(code) {
         title: code.metadata.title.trim(),
         description: code.metadata.description.trim(),
         type: code.metadata.type.trim(),
+        thumbnailurl: code.metadata.thumbnailurl.trim(),
         html: stripFormatting(code.langs.html, 'html'),
         css: stripFormatting(code.langs.css, 'css'),
         javascript: stripFormatting(code.langs.javascript, 'javascript')
@@ -110,6 +111,7 @@ export async function getCodeFromSupabase(id) {
                 title: data.title,
                 description: data.description,
                 type: data.type,
+                thumbnailurl: data.thumbnailurl,
             },
             langs: {
                 html: data.html,

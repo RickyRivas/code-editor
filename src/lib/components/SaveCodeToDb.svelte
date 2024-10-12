@@ -3,6 +3,13 @@
   import { saveOrUpdateCodeInSupabase, getCodeFromSupabase } from "$lib/supabaseCodeSaver"
   import SectionEditor from "./SectionEditor.svelte"
   import { page } from "$app/stores"
+  import UploadWidget from "./UploadWidget.svelte"
+  import { CldImage, configureCloudinary } from "svelte-cloudinary"
+  import { PUBLIC_CLOUDINARY_CLOUD_NAME } from "$env/static/public"
+
+  configureCloudinary({
+    cloudName: PUBLIC_CLOUDINARY_CLOUD_NAME,
+  })
 
   let updatingSnippet = false
 
@@ -11,6 +18,7 @@
       title: "Snippet",
       description: "Snippet Description",
       type: "section",
+      thumbnailurl: "",
     },
     langs: {
       html: "",
@@ -82,13 +90,18 @@
       </label>
     </div>
   {/each}
+
+  <UploadWidget bind:imageUrl={code.metadata.thumbnailurl} />
   <button>Save to DB</button>
 </form>
 
 <h2>Preview</h2>
+<!-- snippet thumbnail -->
+{#if code.metadata.thumbnailurl}
+  <CldImage src={code.metadata.thumbnailurl} width="500" height="500" crop="pad" />
+{/if}
 <!-- This {#key} block tells Svelte to completely destroy 
     and recreate the SectionEditor component whenever [codeReactivity] changes. This ensures that the SectionEditor will update on load -->
-
 {#key codeReactivity}
   <SectionEditor
     section={code.langs}
