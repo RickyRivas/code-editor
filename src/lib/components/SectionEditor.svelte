@@ -28,7 +28,7 @@
     // propagate the change to the parent component
     section = $sectionStore
 
-    // dispatch("sectionUpdate", { section })
+    dispatch("sectionUpdate", { section })
   }
 
   // subscribe to changes in the section prop

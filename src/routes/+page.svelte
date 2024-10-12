@@ -1,6 +1,7 @@
 <script>
   // stores
   import CodeEditor from "$lib/components/CodeEditor.svelte"
+  import SaveCodeToDb from "$lib/components/SaveCodeToDb.svelte"
   import SectionEditor from "$lib/components/SectionEditor.svelte"
   import { onMount } from "svelte"
 
@@ -38,12 +39,13 @@
 
 <main>
   <section id="hero">
-    <h2>Snippet</h2>
+    <!-- <h2>Snippet</h2>
     {#each library as { code, lang }}
       <CodeEditor {code} language={lang} />
     {/each}
 
     <h2>Section</h2>
-    <SectionEditor bind:section on:sectionUpdate={handleSectionUpdate} />
+    <SectionEditor bind:section on:sectionUpdate={handleSectionUpdate} /> -->
+    <SaveCodeToDb />
   </section>
 </main>
