@@ -94,15 +94,19 @@
 
     <!-- display categories and their counts -->
     <h3>Categories</h3>
-    <ul>
-      {#each categories as category}
-        <li>
-          <a href={`/sections/${category.category.toLowerCase().replaceAll(" ", "-")}`}>
-            {category.category} ({category.count})
-          </a>
-        </li>
-      {/each}
-    </ul>
+    {#if categories.length > 0}
+      <ul>
+        {#each categories as category}
+          <li>
+            <a href={`/sections/${category.category.toLowerCase().replaceAll(" ", "-")}`}>
+              {category.category} ({category.count})
+            </a>
+          </li>
+        {/each}
+      </ul>
+    {:else}
+      <p>Please add some snippets!</p>
+    {/if}
   </div>
 </section>
 

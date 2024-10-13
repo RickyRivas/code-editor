@@ -185,3 +185,29 @@ export async function toggleFavorite(id) {
         return { error }
     }
 }
+
+export async function deleteSnippetById(id) {
+    try {
+        const { data, error } = await supabase
+            .from(table)
+            .delete()
+            .match({ id: id })
+            .select()
+
+        if (error) {
+            console.error('Error deleting snippet:', error)
+            throw new Error(error.message)
+        }
+
+        if (data && data.length > 0) {
+            console.log('Snippet deleted successfully:', data[ 0 ])
+            return data[ 0 ]
+        } else {
+            console.warn('No snippet found with the given ID:', id)
+            return null
+        }
+    } catch (err) {
+        console.error('Unexpected error while deleting snippet:', err)
+        throw err
+    }
+}

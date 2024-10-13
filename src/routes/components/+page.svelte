@@ -90,11 +90,14 @@
 <section id="components">
   <div class="container">
     <h2>Components</h2>
-
-    <div class="components">
-      {#each components as component}
-        <ComponentSnippet {component} />
-      {/each}
-    </div>
+    {#if components.length > 0}
+      <div class="components">
+        {#each components as component}
+          <ComponentSnippet {component} />
+        {/each}
+      </div>
+    {:else}
+      <p>Please add some components!</p>
+    {/if}
   </div>
 </section>

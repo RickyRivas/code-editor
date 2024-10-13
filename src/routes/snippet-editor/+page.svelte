@@ -8,10 +8,15 @@
   import LoadingStatus from "$lib/components/LoadingStatus.svelte"
 
   import { CldImage, configureCloudinary } from "svelte-cloudinary"
-  import { saveOrUpdateCodeInSupabase, getCodeFromSupabase } from "$lib/supabaseCodeSaver"
+  import {
+    saveOrUpdateCodeInSupabase,
+    getCodeFromSupabase,
+    deleteSnippetById,
+  } from "$lib/supabaseCodeSaver"
   import { PUBLIC_CLOUDINARY_CLOUD_NAME } from "$env/static/public"
 
   import { updateFieldsWithFetchedData, updateSnippetWithFetchedData } from "$lib/utils/index"
+  import { goto } from "$app/navigation"
 
   // configure cloudinary for image upload widget
   configureCloudinary({
@@ -94,7 +99,7 @@
       label: "type",
       value: "",
       inputType: "radio",
-      required: false,
+      required: true,
       options: ["section", "component"],
     },
     {
@@ -102,7 +107,7 @@
       label: "category - one word, lowercase",
       value: "",
       inputType: "text",
-      required: false,
+      required: true,
     },
     {
       name: "thumbnailurl",
@@ -283,5 +288,23 @@
           saveFromEditor(e)
         }} />
     {/key}
+
+    {#if snippetId}
+      <button
+        data-wow="h"
+        on:click={async () => {
+          initLoadingModal()
+          try {
+            await deleteSnippetById(reqSnippetId)
+            successfulCall("Successfully deleted snippet.")
+            setTimeout(() => {
+              goto("/")
+            }, 3000)
+          } catch (error) {
+            failedCall("failed to delete snippet", false)
+          }
+          // delete snippet and redirect user
+        }}>delete snippet :(</button>
+    {/if}
   </div>
 </section>
