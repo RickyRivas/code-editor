@@ -138,3 +138,50 @@ export async function getCodeFromSupabase(id) {
         throw error
     }
 }
+
+export async function fetchSnippetsByType(type) {
+    try {
+        const { data, error } = await supabase
+            .from(table)
+            .select('*')
+            .eq('type', type)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        return { data, error: null };
+    } catch (error) {
+        console.error('Error fetching snippets:', error);
+        return { data: null, error };
+    }
+}
+
+export async function toggleFavorite(id) {
+    try {
+        const { data: currentSnippet, error: fetchError } = await supabase
+            .from(table)
+            .select('favorite')
+            .eq('id', id)
+            .single()
+
+        console.log(currentSnippet, fetchError)
+        if (fetchError) throw fetchError
+
+        // Toggle the favorite status
+        const newFavoriteStatus = !currentSnippet.favorite
+
+        // Update the snippet with the new favorite status
+        const { data, error: updateError } = await supabase
+            .from(table)
+            .update({ favorite: newFavoriteStatus })
+            .eq('id', id)
+            .select()
+            .single()
+
+        if (updateError) throw updateError
+
+        return { data }
+    } catch (error) {
+        return { error }
+    }
+}

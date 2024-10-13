@@ -11,6 +11,24 @@ export const business = {
         metaDescription: "This is the homepage description",
     },
     interiorPages: [
+        {
+            name: "Snippet Editor",
+            path: "/snippet-editor",
+            title: "Snippet Editor",
+            description: "",
+            imageURL: "",
+            sidebar: true,
+            sidebarComponent: 'subscribex'
+        },
+        {
+            name: "Components",
+            path: "/components",
+            title: "Components",
+            description: "",
+            imageURL: "",
+            sidebar: true,
+            sidebarComponent: 'subscribex'
+        },
     ],
     businessHours: {
         monday: '8:00am to 5:00pm',

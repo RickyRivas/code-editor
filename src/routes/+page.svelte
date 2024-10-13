@@ -4,13 +4,6 @@
   import SectionEditor from "$lib/components/SectionEditor.svelte"
   import { onMount } from "svelte"
 
-  let library = [
-    {
-      code: `<div class="spot01">\n<a class="first wow fadeIn" href="/what-sets-us-apart">\n<img class="decoration" src="/assets/images/spotlight/spot01dec01.jpg" alt="" width="330" height="270" decoding="async" fetchpriority="high">\n<h2 class="topic">Why Patients Choose us</h2>\n</a>\n\n<a class="wow fadeIn" data-wow-delay='.2s' href="/office-visits">\n<img class="decoration" src="/assets/images/spotlight/spot01dec02.jpg" alt="" width="330" height="270" decoding="async" fetchpriority="high">\n<h2 class="topic">Your First Visit</h2>\n</a>\n\n<a class="wow fadeIn" data-wow-delay='.4s' href="/appointment-request">\n<img class="decoration" src="/assets/images/spotlight/spot01dec03.jpg" alt="" width="330" height="270" decoding="async" fetchpriority="high">\n<h2 class="topic">Appointment Request</h2>\n</a>\n\n<a class="last wow fadeIn" data-wow-delay='.6s' href="/patient-forms">\n<img class="decoration" src="/assets/images/spotlight/spot01dec04.jpg" alt="" width="330" height="270" decoding="async" fetchpriority="high">\n<h2 class="topic">New Patient Forms</h2>\n</a>\n</div>`,
-      lang: "html",
-    },
-  ]
-
   let section = {
     title: "stotts-stephen - multiple google locations",
     description: "js included. Background parallax",
@@ -36,14 +29,12 @@
   })
 </script>
 
-<main>
-  <section id="hero">
-    <!-- <h2>Snippet</h2>
+<section id="hero">
+  <!-- <h2>Snippet</h2>
     {#each library as { code, lang }}
       <CodeEditor {code} language={lang} />
     {/each}
 
     <h2>Section</h2>
     <SectionEditor bind:section on:sectionUpdate={handleSectionUpdate} /> -->
-  </section>
-</main>
+</section>

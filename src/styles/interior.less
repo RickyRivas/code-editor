@@ -196,3 +196,32 @@
              }
          }
      }
+
+     // 
+     .components {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 1em;
+
+         .component {
+             display: block;
+             width: 100%;
+             border: 1px solid #fff;
+             padding: 1em;
+
+             @media only screen and (min-width: 768px) {
+                 width: calc(50% - 1em);
+             }
+
+             .display {
+                 min-height: (200/20em);
+                 height: (200/20em);
+                 max-height: (200/20em);
+                 padding: 1em;
+                 font-size: 16px;
+                 border: 1px solid #fff;
+                 overflow: auto;
+                 position: relative;
+             }
+         }
+     }

@@ -173,12 +173,6 @@
   }
 </script>
 
-{#if updatingSnippet}
-  <h2>{`updating snippet #${reqSnippetId}`}</h2>
-{:else}
-  <h2>Add a new snippet!</h2>
-{/if}
-
 {#if showModal}
   <Modal
     disable={disableModalClose}
@@ -201,83 +195,92 @@
   </Modal>
 {/if}
 
-<form
-  action="/"
-  method="post"
-  use:enhance={async ({ cancel }) => {
-    await saveToDb()
-    cancel()
-  }}>
-  {#each fields as field}
-    <!-- regular inputs -->
-    {#if field.inputType === "text"}
-      <div class="form-control">
-        <label for={field.name}>
-          {field.label}
-          <input type="text" name="" id="" bind:value={field.value} required={field.required} />
-        </label>
-        <!-- widget -->
-        {#if field.widget === "cloudinary"}
-          <UploadWidget bind:imageUrl={field.value} />
-        {/if}
-      </div>
+<section>
+  <div class="container">
+    {#if updatingSnippet}
+      <h2>{`updating snippet #${reqSnippetId}`}</h2>
+    {:else}
+      <h2>Add a new snippet!</h2>
     {/if}
-
-    <!-- checkboxs -->
-    {#if field.inputType === "checkbox"}
-      <div class="form-control">
-        <label for={`field-${field.name}`}>
-          {field.label}
-          <input
-            type="checkbox"
-            name={field.name}
-            id={`field-${field.name}`}
-            required={field.required}
-            bind:checked={field.value} />
-        </label>
-        <!-- widget -->
-        {#if field.widget === "cloudinary"}
-          <UploadWidget bind:imageUrl={field.value} />
-        {/if}
-      </div>
-    {/if}
-
-    <!-- radio -->
-    {#if field.inputType === "radio"}
-      <div class="form-control">
-        <label>
-          {field.name}
-          <input type="hidden" name="" /></label>
-        <div class="form-radio-group">
-          {#each field.options as option}
-            <label>
-              {option}
-              <input
-                type="radio"
-                name={field.name}
-                checked={field.value === option}
-                on:change={() => {
-                  field.value = option
-                }} />
+    <form
+      action="/"
+      method="post"
+      use:enhance={async ({ cancel }) => {
+        await saveToDb()
+        cancel()
+      }}>
+      {#each fields as field}
+        <!-- regular inputs -->
+        {#if field.inputType === "text"}
+          <div class="form-control">
+            <label for={field.name}>
+              {field.label}
+              <input type="text" name="" id="" bind:value={field.value} required={field.required} />
             </label>
-          {/each}
-        </div>
-      </div>
-    {/if}
-  {/each}
+            <!-- widget -->
+            {#if field.widget === "cloudinary"}
+              <UploadWidget bind:imageUrl={field.value} />
+            {/if}
+          </div>
+        {/if}
 
-  <button>Save to DB</button>
-</form>
+        <!-- checkboxs -->
+        {#if field.inputType === "checkbox"}
+          <div class="form-control">
+            <label for={`field-${field.name}`}>
+              {field.label}
+              <input
+                type="checkbox"
+                name={field.name}
+                id={`field-${field.name}`}
+                required={field.required}
+                bind:checked={field.value} />
+            </label>
+            <!-- widget -->
+            {#if field.widget === "cloudinary"}
+              <UploadWidget bind:imageUrl={field.value} />
+            {/if}
+          </div>
+        {/if}
 
-<h2>Preview</h2>
+        <!-- radio -->
+        {#if field.inputType === "radio"}
+          <div class="form-control">
+            <label>
+              {field.name}
+              <input type="hidden" name="" /></label>
+            <div class="form-radio-group">
+              {#each field.options as option}
+                <label>
+                  {option}
+                  <input
+                    type="radio"
+                    name={field.name}
+                    checked={field.value === option}
+                    on:change={() => {
+                      field.value = option
+                    }} />
+                </label>
+              {/each}
+            </div>
+          </div>
+        {/if}
+      {/each}
 
-<!-- snippet thumbnail -->
-<!-- This {#key} block tells Svelte to completely destroy 
+      <button>Save to DB</button>
+    </form>
+
+    <h2>Preview</h2>
+
+    <!-- snippet thumbnail -->
+    <!-- This {#key} block tells Svelte to completely destroy 
     and recreate the SectionEditor component whenever [codeReactivity] changes. This ensures that the SectionEditor will update on load -->
-{#key codeReactivity}
-  <SectionEditor
-    section={snippet}
-    on:sectionUpdate={(e) => {
-      saveFromEditor(e)
-    }} />
-{/key}
+    {#key codeReactivity}
+      <SectionEditor
+        section={snippet}
+        on:sectionUpdate={(e) => {
+          saveFromEditor(e)
+        }} />
+    {/key}
+  </div>
+</section>

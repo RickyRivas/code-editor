@@ -7,6 +7,8 @@
 </script>
 
 <Navigation />
-<slot />
+<main>
+  <slot />
+</main>
 <Footer />
 <ToTop />
