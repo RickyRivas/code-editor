@@ -10,6 +10,8 @@
 
   const dispatch = createEventDispatcher()
 
+  export let edit = false
+
   // Import themes
   import { oneDark } from "@codemirror/theme-one-dark"
 
@@ -105,10 +107,13 @@
 </script>
 
 <div class="code-mirror-el" bind:this={editorElement}></div>
-<button on:click={toggleEdit}>{isEditing ? "Save Changes" : "Edit"}</button>
-<span
-  >note: this is for editting snippets only. not solely writing snippets and testing them. Thats
-  what your IDE does.</span>
+
+{#if edit}
+  <button on:click={toggleEdit}>{isEditing ? "Save Changes" : "Edit"}</button>
+  <span
+    >note: this is for editting snippets only. not solely writing snippets and testing them. Thats
+    what your IDE does.</span>
+{/if}
 
 <style lang="less">
   .code-editor {

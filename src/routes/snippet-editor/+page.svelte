@@ -278,6 +278,7 @@
     {#key codeReactivity}
       <SectionEditor
         section={snippet}
+        edit={true}
         on:sectionUpdate={(e) => {
           saveFromEditor(e)
         }} />

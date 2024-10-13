@@ -4,7 +4,8 @@
   import CodeEditor from "./CodeEditor.svelte"
   const dispatch = createEventDispatcher()
 
-  export let section
+  export let section,
+    edit = false
 
   const langs = ["html", "css", "javascript"]
   let currentLang = langs[0]
@@ -14,6 +15,7 @@
 
   function switchLang(lang) {
     currentLang = lang
+    dispatch("langUpdate", { snippet: $sectionStore[currentLang], lang: currentLang })
   }
 
   function handleCodeUpdate(event) {
@@ -41,6 +43,7 @@
   <CodeEditor
     code={$sectionStore[currentLang]}
     language={currentLang}
+    {edit}
     on:update={handleCodeUpdate} />
 {/key}
 
