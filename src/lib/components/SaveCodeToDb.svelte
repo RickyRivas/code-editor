@@ -12,6 +12,7 @@
   })
 
   let updatingSnippet = false
+  let snippetId
 
   let snippet = {
     html: "",
@@ -62,7 +63,8 @@
 
   async function saveToDb() {
     try {
-      const savedCode = await saveOrUpdateCodeInSupabase({ fields, snippet })
+      const savedCode = await saveOrUpdateCodeInSupabase({ id: snippetId, fields, snippet })
+      console.log("Successfully updated or saved snippet.")
     } catch (error) {
       console.log("error saving code")
     }
@@ -87,7 +89,7 @@
   }
 
   async function fetchSnippet(id) {
-    if (snippetId) {
+    if (reqSnippetId) {
       try {
         const { fetchedFields, fetchedSnippet, fetchedId } = await getCodeFromSupabase(id)
 
@@ -96,6 +98,10 @@
 
         // Update snippet with fetched data
         snippet = updateSnippetWithFetchedData(snippet, fetchedSnippet)
+
+        // update id
+        console.log(fetchedId)
+        snippetId = fetchedId
 
         // reassigning destroys and reinits the SectionEditor component
         codeReactivity = { fetchedFields, fetchedSnippet, fetchedId }
@@ -107,9 +113,9 @@
 
   // check if there is an id in the search params
   let codeReactivity = {}
-  const snippetId = $page.url.searchParams.get("snippetId")
-  if (snippetId) {
-    fetchSnippet(snippetId)
+  const reqSnippetId = $page.url.searchParams.get("snippetId")
+  if (reqSnippetId) {
+    fetchSnippet(reqSnippetId)
     updatingSnippet = true
   }
 
@@ -118,7 +124,7 @@
 </script>
 
 {#if updatingSnippet}
-  <h2>{`updating snippet #${snippetId}`}</h2>
+  <h2>{`updating snippet #${reqSnippetId}`}</h2>
 {:else}
   <h2>Add a new snippet!</h2>
 {/if}

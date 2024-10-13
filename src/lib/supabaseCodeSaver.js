@@ -10,7 +10,7 @@ let table = 'code_snippets'
 
 function stripFormatting(snippet, language) {
 
-    if (language === 'css' || language === 'less') {
+    if (language === 'css' || language === 'less' || language === 'javascript') {
         return snippet
             .split('\n')
             .map(line => {
