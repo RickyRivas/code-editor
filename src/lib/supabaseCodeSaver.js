@@ -8,9 +8,10 @@ const supabase = createClient(
 
 let table = 'code_snippets'
 
-function stripFormatting(code, language) {
+function stripFormatting(snippet, language) {
+
     if (language === 'css' || language === 'less') {
-        return code
+        return snippet
             .split('\n')
             .map(line => {
                 line = line.trim();
@@ -34,7 +35,7 @@ function stripFormatting(code, language) {
             .trim();
     } else {
         // For HTML and JavaScript, use the original stripping logic
-        return code
+        return snippet
             .replace(/\s+/g, ' ')
             .replace(/:\s/g, ':')
             .replace(/\{\s/g, '{')
@@ -46,15 +47,30 @@ function stripFormatting(code, language) {
 }
 
 function flattenAndStripCodeObject(code) {
-    return {
-        title: code.metadata.title.trim(),
-        description: code.metadata.description.trim(),
-        type: code.metadata.type.trim(),
-        thumbnailurl: code.metadata.thumbnailurl.trim(),
-        html: stripFormatting(code.langs.html, 'html'),
-        css: stripFormatting(code.langs.css, 'css'),
-        javascript: stripFormatting(code.langs.javascript, 'javascript')
-    }
+    const { fields, snippet } = code
+
+    const fieldMap = Object.fromEntries(
+        fields.map(field => [ field.name, field.value ])
+    )
+
+    // Define the fields to extract and process
+    const fieldsToExtract = [ 'title', 'description', 'type', 'thumbnailurl', 'favorite' ];
+
+    // Create the result object
+    const result = Object.fromEntries(
+        fieldsToExtract.map(fieldName => [
+            fieldName,
+            fieldName === 'favorite' ? fieldMap[ fieldName ] : (fieldMap[ fieldName ] || '').trim()
+        ])
+    )
+
+    // Process snippet fields
+    const snippetLangs = [ 'html', 'css', 'javascript' ]
+    snippetLangs.forEach(lang => {
+        result[ lang ] = stripFormatting(snippet[ lang ] || '', lang);
+    });
+
+    return result;
 }
 
 export async function saveOrUpdateCodeInSupabase(code) {
@@ -106,14 +122,15 @@ export async function getCodeFromSupabase(id) {
         }
 
         return {
-            id: data.id,
-            metadata: {
+            fetchedId: data.id,
+            fetchedFields: {
                 title: data.title,
                 description: data.description,
                 type: data.type,
                 thumbnailurl: data.thumbnailurl,
+                favorite: data.favorite
             },
-            langs: {
+            fetchedSnippet: {
                 html: data.html,
                 css: data.css,
                 javascript: data.javascript,

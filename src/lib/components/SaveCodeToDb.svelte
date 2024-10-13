@@ -13,44 +13,92 @@
 
   let updatingSnippet = false
 
-  let code = {
-    metadata: {
-      title: "Snippet",
-      description: "Snippet Description",
-      type: "section",
-      thumbnailurl: "",
-    },
-    langs: {
-      html: "",
-      css: "",
-      javascript: "",
-    },
+  let snippet = {
+    html: "",
+    css: "",
+    javascript: "",
   }
 
-  function handleInput(key, e) {
-    code.metadata[key] = e.target.value
-    code.metadata = code.metadata
-  }
+  let fields = [
+    {
+      name: "title",
+      label: "title",
+      value: "",
+      inputType: "text",
+    },
+    {
+      name: "description",
+      label: "description",
+      value: "",
+      inputType: "text",
+    },
+    {
+      name: "type",
+      label: "type",
+      value: "",
+      inputType: "text",
+    },
+    {
+      name: "thumbnailurl",
+      label: "thumbnail url",
+      value: "",
+      inputType: "text",
+      widget: "cloudinary",
+    },
+    {
+      name: "favorite",
+      label: "favorite",
+      value: false,
+      inputType: "checkbox",
+    },
+  ]
 
   function saveFromEditor(e) {
-    // only update code.langs
-    code.langs = e.detail.section
+    // after editor saves changes, e.detail.section comes up from the component
+    snippet.html = e.detail.section.html
+    snippet.css = e.detail.section.css
+    snippet.javascript = e.detail.section.javascript
   }
 
   async function saveToDb() {
     try {
-      const savedCode = await saveOrUpdateCodeInSupabase(code)
+      const savedCode = await saveOrUpdateCodeInSupabase({ fields, snippet })
     } catch (error) {
       console.log("error saving code")
     }
   }
 
+  // Function to update fields with fetched data
+  function updateFieldsWithFetchedData(fields, fetchedData) {
+    return fields.map((field) => {
+      if (fetchedData.hasOwnProperty(field.name)) {
+        return { ...field, value: fetchedData[field.name] }
+      }
+      return field
+    })
+  }
+
+  // Function to update snippet with fetched data
+  function updateSnippetWithFetchedData(snippet, fetchedData) {
+    return {
+      ...snippet,
+      ...Object.fromEntries(Object.entries(fetchedData).filter(([key]) => key in snippet)),
+    }
+  }
+
   async function fetchSnippet(id) {
-    console.log(id)
     if (snippetId) {
       try {
-        code = await getCodeFromSupabase(id)
-        codeReactivity = code
+        const { fetchedFields, fetchedSnippet, fetchedId } = await getCodeFromSupabase(id)
+
+        // Update fields with fetched data
+        fields = updateFieldsWithFetchedData(fields, fetchedFields)
+
+        // Update snippet with fetched data
+        snippet = updateSnippetWithFetchedData(snippet, fetchedSnippet)
+
+        // reassigning destroys and reinits the SectionEditor component
+        codeReactivity = { fetchedFields, fetchedSnippet, fetchedId }
       } catch (error) {
         console.error("Error loading snippet:", error)
       }
@@ -64,6 +112,9 @@
     fetchSnippet(snippetId)
     updatingSnippet = true
   }
+
+  // $: console.log("fields", fields)
+  // $: console.log("snippet langs", snippet)
 </script>
 
 {#if updatingSnippet}
@@ -76,35 +127,53 @@
   action="/"
   method="post"
   use:enhance={async ({ cancel }) => {
-    console.log("saving to db:", code)
-
     await saveToDb()
     cancel()
-    return async ({ result }) => {}
   }}>
-  {#each Object.entries(code.metadata) as [key, value]}
-    <div class="form-action">
-      <label for={key}>
-        {key}
-        <input type="text" name="" id="" {value} on:input={(e) => handleInput(key, e)} required />
-      </label>
-    </div>
+  {#each fields as field}
+    <!-- regular inputs -->
+    {#if field.inputType === "text"}
+      <div class="form-control">
+        <label for={field.name}>
+          {field.label}
+          <input type="text" name="" id="" bind:value={field.value} required />
+        </label>
+        <!-- widget -->
+        {#if field.widget === "cloudinary"}
+          <UploadWidget bind:imageUrl={field.value} />
+        {/if}
+      </div>
+    {/if}
+
+    {#if field.inputType === "checkbox"}
+      <div class="form-control">
+        <label for={`field-${field.name}`}>
+          {field.label}
+          <input
+            type="checkbox"
+            name={field.name}
+            id={`field-${field.name}`}
+            bind:checked={field.value} />
+        </label>
+        <!-- widget -->
+        {#if field.widget === "cloudinary"}
+          <UploadWidget bind:imageUrl={field.value} />
+        {/if}
+      </div>
+    {/if}
   {/each}
 
-  <UploadWidget bind:imageUrl={code.metadata.thumbnailurl} />
   <button>Save to DB</button>
 </form>
 
 <h2>Preview</h2>
+
 <!-- snippet thumbnail -->
-{#if code.metadata.thumbnailurl}
-  <CldImage src={code.metadata.thumbnailurl} width="500" height="500" crop="pad" />
-{/if}
 <!-- This {#key} block tells Svelte to completely destroy 
     and recreate the SectionEditor component whenever [codeReactivity] changes. This ensures that the SectionEditor will update on load -->
 {#key codeReactivity}
   <SectionEditor
-    section={code.langs}
+    section={snippet}
     on:sectionUpdate={(e) => {
       saveFromEditor(e)
     }} />
