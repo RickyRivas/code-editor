@@ -98,6 +98,13 @@
       options: ["section", "component"],
     },
     {
+      name: "category",
+      label: "category",
+      value: "",
+      inputType: "text",
+      required: false,
+    },
+    {
       name: "thumbnailurl",
       label: "thumbnail url",
       value: "",
@@ -127,7 +134,7 @@
       const savedCode = await saveOrUpdateCodeInSupabase({ id: snippetId, fields, snippet })
       successfulCall("Successfully updated or saved snippet.", false)
     } catch (error) {
-      failedCall(`"Error trying to save or update snippet: ${error}`, false)
+      failedCall(`"Error trying to save or update snippet: ${error.message}`, false)
     }
   }
 
@@ -152,7 +159,7 @@
         // close modal
         successfulCall("", true)
       } catch (error) {
-        failedCall(`"Error loading snippet:", ${error}`, false)
+        failedCall(`"Error loading snippet:", ${error.message}`, false)
       }
     }
   }
