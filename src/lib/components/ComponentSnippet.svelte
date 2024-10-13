@@ -4,13 +4,16 @@
 
   import Prism from "prismjs"
   import beautify from "js-beautify"
+
   // Import additional languages
   import "prismjs/components/prism-javascript"
   import "prismjs/components/prism-css"
   import "prismjs/components/prism-markup"
+
   import { onMount } from "svelte"
   import { toggleFavorite } from "$lib/supabaseCodeSaver"
 
+  // logic
   export let component
 
   const codeToDisplay = {
@@ -32,9 +35,12 @@
   }
 
   let formattedCode, activeIndex
+  let copyBtn
   let selectedSnippet = Object.entries(codeToDisplay)[0]
 
   function formatAndHighlightCode(index, code, tech) {
+    activeIndex = index
+
     const beautifyFunction = beautifyFunctions[tech] || ((x) => x)
     const language = prismLanguages[tech] || Prism.languages.markup
 
@@ -59,7 +65,14 @@
       wrap_line_length: 100,
     }
     navigator.clipboard.writeText(beautifyFunction(selectedSnippet[1], prismOpts))
+    copyBtn.textContent = "Copied!"
+    copyBtn.classList.add("active")
     console.log("copied!")
+
+    setTimeout(() => {
+      copyBtn.textContent = "Copy"
+      copyBtn.classList.remove("active")
+    }, 1000)
   }
 
   onMount(() => {
@@ -87,13 +100,14 @@
   <div class="display">
     <pre>{@html formattedCode}</pre>
   </div>
-  <button on:click={copy}>copy</button>
+  <button on:click={copy} bind:this={copyBtn}>copy</button>
+  <a href={`/snippet-editor?snippetId=${component.id}`}>Edit</a>
   <div class="tabs">
     {#each Object.entries(codeToDisplay) as [tech, snippet], i}
       <button
         on:click={() => formatAndHighlightCode(i, snippet, tech)}
         class:active={i === activeIndex}
-        disabled={i === activeIndex}>
+        disabled={i === activeIndex || !snippet}>
         {tech}
       </button>
     {/each}
