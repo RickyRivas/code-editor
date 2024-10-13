@@ -1,16 +1,70 @@
 <script>
   import { enhance } from "$app/forms"
-  import { saveOrUpdateCodeInSupabase, getCodeFromSupabase } from "$lib/supabaseCodeSaver"
-  import SectionEditor from "./SectionEditor.svelte"
   import { page } from "$app/stores"
-  import UploadWidget from "./UploadWidget.svelte"
+
+  import SectionEditor from "$lib/components/SectionEditor.svelte"
+  import UploadWidget from "$lib/components/UploadWidget.svelte"
+  import Modal from "$lib/components/Modal.svelte"
+  import LoadingStatus from "$lib/components/LoadingStatus.svelte"
+
   import { CldImage, configureCloudinary } from "svelte-cloudinary"
+  import { saveOrUpdateCodeInSupabase, getCodeFromSupabase } from "$lib/supabaseCodeSaver"
   import { PUBLIC_CLOUDINARY_CLOUD_NAME } from "$env/static/public"
 
+  import { updateFieldsWithFetchedData, updateSnippetWithFetchedData } from "$lib/utils/index"
+
+  // configure cloudinary for image upload widget
   configureCloudinary({
     cloudName: PUBLIC_CLOUDINARY_CLOUD_NAME,
   })
 
+  // modal
+  //   $: console.log("fields", fields)
+  //   $: console.log("snippet langs", snippet)
+  let showModal = false
+  let success = false
+  let error = false
+  let message = ""
+  let disableModalClose = false
+  let loading = false
+
+  function clearModal() {
+    message = ""
+    showModal = false
+    success = false
+    loading = false
+    error = false
+  }
+
+  function initLoadingModal() {
+    showModal = true
+    loading = true
+  }
+
+  function successfulCall(responseMessage, closeImmediately) {
+    // if closeImmediately, when fetch is done close modal
+    if (closeImmediately) {
+      clearModal()
+      return
+    }
+
+    success = true
+    message = responseMessage
+    loading = false
+  }
+  function failedCall(responseMessage, closeImmediately) {
+    // if closeImmediately, when fetch is done close modal
+    if (closeImmediately) {
+      clearModal()
+      return
+    }
+
+    error = true
+    message = responseMessage
+    loading = false
+  }
+
+  // Logic
   let updatingSnippet = false
   let snippetId
 
@@ -26,18 +80,22 @@
       label: "title",
       value: "",
       inputType: "text",
+      required: true,
     },
     {
       name: "description",
       label: "description",
       value: "",
       inputType: "text",
+      required: false,
     },
     {
       name: "type",
       label: "type",
       value: "",
-      inputType: "text",
+      inputType: "radio",
+      required: false,
+      options: ["section", "component"],
     },
     {
       name: "thumbnailurl",
@@ -45,12 +103,14 @@
       value: "",
       inputType: "text",
       widget: "cloudinary",
+      required: false,
     },
     {
       name: "favorite",
       label: "favorite",
       value: false,
       inputType: "checkbox",
+      required: false,
     },
   ]
 
@@ -62,33 +122,17 @@
   }
 
   async function saveToDb() {
+    initLoadingModal()
     try {
       const savedCode = await saveOrUpdateCodeInSupabase({ id: snippetId, fields, snippet })
-      console.log("Successfully updated or saved snippet.")
+      successfulCall("Successfully updated or saved snippet.", false)
     } catch (error) {
-      console.log("error saving code")
-    }
-  }
-
-  // Function to update fields with fetched data
-  function updateFieldsWithFetchedData(fields, fetchedData) {
-    return fields.map((field) => {
-      if (fetchedData.hasOwnProperty(field.name)) {
-        return { ...field, value: fetchedData[field.name] }
-      }
-      return field
-    })
-  }
-
-  // Function to update snippet with fetched data
-  function updateSnippetWithFetchedData(snippet, fetchedData) {
-    return {
-      ...snippet,
-      ...Object.fromEntries(Object.entries(fetchedData).filter(([key]) => key in snippet)),
+      failedCall(`"Error trying to save or update snippet: ${error}`, false)
     }
   }
 
   async function fetchSnippet(id) {
+    initLoadingModal()
     if (reqSnippetId) {
       try {
         const { fetchedFields, fetchedSnippet, fetchedId } = await getCodeFromSupabase(id)
@@ -100,13 +144,15 @@
         snippet = updateSnippetWithFetchedData(snippet, fetchedSnippet)
 
         // update id
-        console.log(fetchedId)
         snippetId = fetchedId
 
         // reassigning destroys and reinits the SectionEditor component
         codeReactivity = { fetchedFields, fetchedSnippet, fetchedId }
+
+        // close modal
+        successfulCall("", true)
       } catch (error) {
-        console.error("Error loading snippet:", error)
+        failedCall(`"Error loading snippet:", ${error}`, false)
       }
     }
   }
@@ -118,15 +164,34 @@
     fetchSnippet(reqSnippetId)
     updatingSnippet = true
   }
-
-  // $: console.log("fields", fields)
-  // $: console.log("snippet langs", snippet)
 </script>
 
 {#if updatingSnippet}
   <h2>{`updating snippet #${reqSnippetId}`}</h2>
 {:else}
   <h2>Add a new snippet!</h2>
+{/if}
+
+{#if showModal}
+  <Modal
+    disable={disableModalClose}
+    on:escape={() => {
+      clearModal()
+    }}>
+    <div>
+      <LoadingStatus bind:loading bind:success bind:error />
+      {#if loading}
+        <p>Loading...</p>
+      {/if}
+      {#if success}
+        <!-- successfully added to db -->
+        <p>{message}</p>
+      {:else if error}
+        <!-- failed to be added to db -->
+        <p>{message}</p>
+      {/if}
+    </div>
+  </Modal>
 {/if}
 
 <form
@@ -142,7 +207,7 @@
       <div class="form-control">
         <label for={field.name}>
           {field.label}
-          <input type="text" name="" id="" bind:value={field.value} required />
+          <input type="text" name="" id="" bind:value={field.value} required={field.required} />
         </label>
         <!-- widget -->
         {#if field.widget === "cloudinary"}
@@ -151,6 +216,7 @@
       </div>
     {/if}
 
+    <!-- checkboxs -->
     {#if field.inputType === "checkbox"}
       <div class="form-control">
         <label for={`field-${field.name}`}>
@@ -159,12 +225,36 @@
             type="checkbox"
             name={field.name}
             id={`field-${field.name}`}
+            required={field.required}
             bind:checked={field.value} />
         </label>
         <!-- widget -->
         {#if field.widget === "cloudinary"}
           <UploadWidget bind:imageUrl={field.value} />
         {/if}
+      </div>
+    {/if}
+
+    <!-- radio -->
+    {#if field.inputType === "radio"}
+      <div class="form-control">
+        <label>
+          {field.name}
+          <input type="hidden" name="" /></label>
+        <div class="form-radio-group">
+          {#each field.options as option}
+            <label>
+              {option}
+              <input
+                type="radio"
+                name={field.name}
+                checked={field.value === option}
+                on:change={() => {
+                  field.value = option
+                }} />
+            </label>
+          {/each}
+        </div>
       </div>
     {/if}
   {/each}

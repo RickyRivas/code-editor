@@ -88,7 +88,6 @@ export async function saveOrUpdateCodeInSupabase(code) {
 
             if (error) throw error
             result = data[ 0 ]
-            console.log('Code updated successfully:', result)
         }
         else {
             // add a new snippet
@@ -99,10 +98,8 @@ export async function saveOrUpdateCodeInSupabase(code) {
 
             if (error) throw error
             result = data[ 0 ]
-            console.log('New code saved successfully:', result)
         }
     } catch (error) {
-        console.error('Error saving/updating code:', error.message)
         throw error
     }
 }
@@ -137,7 +134,6 @@ export async function getCodeFromSupabase(id) {
             }
         }
     } catch (error) {
-        console.error('Error fetching code:', error.message)
         throw error
     }
 }

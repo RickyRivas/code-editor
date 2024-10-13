@@ -37,6 +37,7 @@ label {
     color: var(--heading);
     display: block;
     .fs(@fs);
+    text-transform: capitalize;
 }
 
 select {
@@ -200,5 +201,13 @@ textarea {
 [data-theme='dark'] {
     form.style-one .form-control select {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='512pt' viewBox='0 -93 512 512' width='512pt'%3E%3Cpath d='m441.667969 0-185.667969 185.667969-185.667969-185.667969-70.332031 70.332031 256 256 256-256zm0 0' fill='%23fff'/%3E%3C/svg%3E");
+    }
+}
+
+.form-radio-group {
+    label {
+        .ib;
+        .va(top);
+        margin: 0 1em 0 0;
     }
 }

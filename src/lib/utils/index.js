@@ -111,3 +111,21 @@ export function noNestedObjects(data) {
     }
     return master
 }
+
+// Function to update fields with fetched data
+export function updateFieldsWithFetchedData(fields, fetchedData) {
+    return fields.map((field) => {
+        if (fetchedData.hasOwnProperty(field.name)) {
+            return { ...field, value: fetchedData[ field.name ] }
+        }
+        return field
+    })
+}
+
+// Function to update snippet with fetched data
+export function updateSnippetWithFetchedData(snippet, fetchedData) {
+    return {
+        ...snippet,
+        ...Object.fromEntries(Object.entries(fetchedData).filter(([ key ]) => key in snippet)),
+    }
+}
