@@ -29,6 +29,15 @@ export const business = {
             sidebar: true,
             sidebarComponent: 'subscribex'
         },
+        {
+            name: "Sections",
+            path: "/sections",
+            title: "Sections",
+            description: "",
+            imageURL: "",
+            sidebar: true,
+            sidebarComponent: 'subscribex'
+        },
     ],
     businessHours: {
         monday: '8:00am to 5:00pm',

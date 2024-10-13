@@ -1,9 +1,8 @@
 <script>
-  import ComponentSnippet from "$lib/components/ComponentSnippet.svelte"
-  import Modal from "$lib/components/Modal.svelte"
-  import LoadingStatus from "$lib/components/LoadingStatus.svelte"
   import { fetchSnippetsByType } from "$lib/supabaseCodeSaver"
   import { onMount } from "svelte"
+  import Modal from "$lib/components/Modal.svelte"
+  import LoadingStatus from "$lib/components/LoadingStatus.svelte"
 
   // modal
   let showModal = false
@@ -50,20 +49,62 @@
   }
 
   // grab components on load
-  let components = []
+  let sections = []
+  let categories = []
+
+  function extractUnqiqueCategoriesWithCounts(snippets) {
+    // Use an object to store categories and their counts
+    const categoryCountMap = {}
+
+    snippets.forEach((snippet) => {
+      if (snippet.category) {
+        if (categoryCountMap[snippet.category]) {
+          categoryCountMap[snippet.category]++
+        } else {
+          categoryCountMap[snippet.category] = 1
+        }
+      }
+    })
+
+    // Convert the map to an array of objects and sort by category name
+    return Object.entries(categoryCountMap)
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => a.category.localeCompare(b.category))
+  }
 
   onMount(async () => {
     initLoadingModal()
-    const { data, error } = await fetchSnippetsByType("component")
+    const { data, error } = await fetchSnippetsByType("section")
 
     if (!error) {
-      components = data
+      sections = data
+
+      categories = extractUnqiqueCategoriesWithCounts(sections)
+      console.log(categories)
       successfulCall("", true)
     } else {
       failedCall("", true)
     }
   })
 </script>
+
+<section>
+  <div class="container">
+    <h2>Sections</h2>
+
+    <!-- display categories and their counts -->
+    <h3>Categories</h3>
+    <ul>
+      {#each categories as category}
+        <li>
+          <a href={`/sections/${category.category.toLowerCase().replaceAll(" ", "-")}`}>
+            {category.category} ({category.count})
+          </a>
+        </li>
+      {/each}
+    </ul>
+  </div>
+</section>
 
 {#if showModal}
   <Modal
@@ -86,15 +127,3 @@
     </div>
   </Modal>
 {/if}
-
-<section id="components">
-  <div class="container">
-    <h2>Components</h2>
-
-    <div class="components">
-      {#each components as component}
-        <ComponentSnippet {component} />
-      {/each}
-    </div>
-  </div>
-</section>

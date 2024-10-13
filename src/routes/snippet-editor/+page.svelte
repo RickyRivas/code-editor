@@ -99,7 +99,7 @@
     },
     {
       name: "category",
-      label: "category",
+      label: "category - one word, lowercase",
       value: "",
       inputType: "text",
       required: false,
