@@ -205,7 +205,7 @@
     {#if updatingSnippet}
       <h2>{`updating snippet #${reqSnippetId}`}</h2>
     {:else}
-      <h2>Add a new snippet!</h2>
+      <h2>RWD Code Library</h2>
     {/if}
     <form
       action="/"
