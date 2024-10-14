@@ -1,6 +1,5 @@
 <script>
-  // simple code editor that we dont need to full codemirror exp.
-  // ideal for displaying large amounts of components/sections
+  // component block
 
   import Prism from "prismjs"
   import beautify from "js-beautify"
@@ -101,7 +100,7 @@
     <pre>{@html formattedCode}</pre>
   </div>
   <button on:click={copy} bind:this={copyBtn}>copy</button>
-  <a href={`/snippet-editor?snippetId=${component.id}`}>Edit</a>
+  <a href={`/manager?snippetId=${component.id}`}>Edit</a>
   <div class="tabs">
     {#each Object.entries(codeToDisplay) as [tech, snippet], i}
       <button

@@ -12,9 +12,9 @@ export const business = {
     },
     interiorPages: [
         {
-            name: "Snippet Editor",
-            path: "/snippet-editor",
-            title: "Snippet Editor",
+            name: "Manager",
+            path: "/manager",
+            title: "Manager",
             description: "",
             imageURL: "",
             sidebar: true,
@@ -33,6 +33,15 @@ export const business = {
             name: "Sections",
             path: "/sections",
             title: "Sections",
+            description: "",
+            imageURL: "",
+            sidebar: true,
+            sidebarComponent: 'subscribex'
+        },
+        {
+            name: "Snippets",
+            path: "/snippets",
+            title: "Snippets",
             description: "",
             imageURL: "",
             sidebar: true,

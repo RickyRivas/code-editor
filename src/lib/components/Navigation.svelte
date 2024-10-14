@@ -124,8 +124,6 @@
         {/each}
       </ul>
 
-      <AnchorButton text="Contact Us" link="/contact" />
-
       <form
         class="theme-toggle custom"
         method="POST"

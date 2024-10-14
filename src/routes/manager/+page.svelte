@@ -100,7 +100,7 @@
       value: "",
       inputType: "radio",
       required: true,
-      options: ["section", "component"],
+      options: ["section", "component", "snippet"],
     },
     {
       name: "category",

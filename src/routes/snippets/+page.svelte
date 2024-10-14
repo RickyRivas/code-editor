@@ -3,7 +3,8 @@
   import LoadingStatus from "$lib/components/LoadingStatus.svelte"
   import { fetchSnippetsByType } from "$lib/supabaseCodeSaver"
   import { onMount } from "svelte"
-  import ComponentBlock from "$lib/components/ComponentBlock.svelte"
+  import SnippetBlock from "$lib/components/SnippetBlock.svelte"
+  import { extractUnqiqueCategoriesWithCounts } from "$lib/utils"
 
   // modal
   let showModal = false
@@ -49,15 +50,17 @@
     loading = false
   }
 
-  // grab components on load
-  let components = []
+  // grab snippets on load
+  let snippets = []
+  let categories = []
 
   onMount(async () => {
     initLoadingModal()
-    const { data, error } = await fetchSnippetsByType("component")
+    const { data, error } = await fetchSnippetsByType("snippet")
 
     if (!error) {
-      components = data
+      snippets = data
+      categories = extractUnqiqueCategoriesWithCounts(snippets)
       successfulCall("", true)
     } else {
       failedCall("", true)
@@ -65,39 +68,33 @@
   })
 </script>
 
-{#if showModal}
-  <Modal
-    disable={disableModalClose}
-    on:escape={() => {
-      clearModal()
-    }}>
-    <div>
-      <LoadingStatus bind:loading bind:success bind:error />
-      {#if loading}
-        <p>Loading...</p>
-      {/if}
-      {#if success}
-        <!-- successfully added to db -->
-        <p>{message}</p>
-      {:else if error}
-        <!-- failed to be added to db -->
-        <p>{message}</p>
-      {/if}
-    </div>
-  </Modal>
-{/if}
-
-<section id="components">
+<section>
   <div class="container">
-    <h2>Components</h2>
-    {#if components.length > 0}
-      <div class="components">
-        {#each components as component}
-          <ComponentBlock {component} />
+    <h2>Snippets</h2>
+
+    <h3>Categories</h3>
+    {#if categories.length > 0}
+      <ul>
+        {#each categories as category}
+          <li>
+            <a href={`/sections/${category.category.toLowerCase().replaceAll(" ", "-")}`}>
+              {category.category} ({category.count})
+            </a>
+          </li>
+        {/each}
+      </ul>
+    {:else}
+      <p>Please add some snippets!</p>
+    {/if}
+
+    {#if snippets.length > 0}
+      <div class="snippets-items">
+        {#each snippets as snippet}
+          <SnippetBlock {snippet} />
         {/each}
       </div>
     {:else}
-      <p>Please add some components!</p>
+      <p>Please add some snippets!</p>
     {/if}
   </div>
 </section>

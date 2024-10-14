@@ -164,7 +164,6 @@ export async function toggleFavorite(id) {
             .eq('id', id)
             .single()
 
-        console.log(currentSnippet, fetchError)
         if (fetchError) throw fetchError
 
         // Toggle the favorite status

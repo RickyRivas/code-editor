@@ -129,3 +129,23 @@ export function updateSnippetWithFetchedData(snippet, fetchedData) {
         ...Object.fromEntries(Object.entries(fetchedData).filter(([ key ]) => key in snippet)),
     }
 }
+
+export function extractUnqiqueCategoriesWithCounts(snippets) {
+    // Use an object to store categories and their counts
+    const categoryCountMap = {}
+
+    snippets.forEach((snippet) => {
+        if (snippet.category) {
+            if (categoryCountMap[ snippet.category ]) {
+                categoryCountMap[ snippet.category ]++
+            } else {
+                categoryCountMap[ snippet.category ] = 1
+            }
+        }
+    })
+
+    // Convert the map to an array of objects and sort by category name
+    return Object.entries(categoryCountMap)
+        .map(([ category, count ]) => ({ category, count }))
+        .sort((a, b) => a.category.localeCompare(b.category))
+}

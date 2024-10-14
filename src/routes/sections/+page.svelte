@@ -3,6 +3,7 @@
   import { onMount } from "svelte"
   import Modal from "$lib/components/Modal.svelte"
   import LoadingStatus from "$lib/components/LoadingStatus.svelte"
+  import { extractUnqiqueCategoriesWithCounts } from "$lib/utils"
 
   // modal
   let showModal = false
@@ -52,26 +53,6 @@
   let sections = []
   let categories = []
 
-  function extractUnqiqueCategoriesWithCounts(snippets) {
-    // Use an object to store categories and their counts
-    const categoryCountMap = {}
-
-    snippets.forEach((snippet) => {
-      if (snippet.category) {
-        if (categoryCountMap[snippet.category]) {
-          categoryCountMap[snippet.category]++
-        } else {
-          categoryCountMap[snippet.category] = 1
-        }
-      }
-    })
-
-    // Convert the map to an array of objects and sort by category name
-    return Object.entries(categoryCountMap)
-      .map(([category, count]) => ({ category, count }))
-      .sort((a, b) => a.category.localeCompare(b.category))
-  }
-
   onMount(async () => {
     initLoadingModal()
     const { data, error } = await fetchSnippetsByType("section")
@@ -80,7 +61,6 @@
       sections = data
 
       categories = extractUnqiqueCategoriesWithCounts(sections)
-      console.log(categories)
       successfulCall("", true)
     } else {
       failedCall("", true)
@@ -105,7 +85,7 @@
         {/each}
       </ul>
     {:else}
-      <p>Please add some snippets!</p>
+      <p>Please add some sections!</p>
     {/if}
   </div>
 </section>

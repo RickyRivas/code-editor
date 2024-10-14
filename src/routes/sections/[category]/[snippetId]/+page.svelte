@@ -68,7 +68,7 @@
           await toggleFavorite(fetchedId)
         }} />
     </label>
-    <a href="/snippet-editor?snippetId={fetchedId}">Edit</a>
+    <a href="/manager?snippetId={fetchedId}">Edit</a>
     <button bind:this={copyBtn} on:click={copy}>copy {currentSnippet.lang}</button>
     <SectionEditor
       section={fetchedSnippet}
